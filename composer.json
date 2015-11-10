@@ -1,8 +1,14 @@
 {
   "name" : "across-health/oph-ci-examination",
   "description": "Examination module for OpenEyes",
-  "type": "openeyes-module",
+  "type": "openeyes-community-module",
+  "repositories": [
+      {
+          "type": "git",
+          "url": "https://github.com/across-health/OpenEyesInstaller"
+      }
+    ],
   "require": {
-    "openeyes/module-installer": "*"
+    "across-health/module-installer": "*"
   }
 }
