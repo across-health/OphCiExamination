@@ -17,29 +17,27 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 ?>
-
-<?php
-    $this->widget('application.modules.eyedraw.OEEyeDrawWidget', array(
-        'doodleToolBarArray' => array(
-            array('RRD', 'UTear', 'RoundHole', 'Dialysis', 'GRT', 'MacularHole', 'StarFold', 'AntPVR', 'Lattice', 'Cryo', 'LaserCircle'),
-            array('DrainageRetinotomy', 'Retinoschisis', 'OuterLeafBreak', 'InnerLeafBreak'),
-        ),
-        'onReadyCommandArray' => array(
-            array('addDoodle', array('Fundus')),
-            array('deselectDoodles', array()),
-        ),
-        //'listenerArray' => array('posteriorListener'),
-        'idSuffix' => $side.'_'.$element->elementType->id,
-        'side' => ($side == 'right') ? 'R' : 'L',
-        'mode' => 'edit',
-        'model' => $element,
-        'attribute' => $side.'_eyedraw',
-        'template' => 'OEEyeDrawWidget_InlineToolbar',
-        'maxToolbarButtons' => 7,
-        'fields' => $this->renderPartial($element->form_view . '_OEEyeDraw_fields', array(
-            'form' => $form,
-            'side' => $side,
-            'element' => $element
-        ), true)
-    ));
-?>
+<div class="element-data element-eyes row">
+	<div class="element-eye right-eye column">
+		<div class="data-row">
+			<?php if ($element->hasRight()) {
+    $this->renderPartial($element->view_view . '_OEEyeDraw', array('side' => 'right', 'element' => $element));
+} else {
+    ?>
+				<div class="data-value">Not recorded</div>
+			<?php 
+}?>
+		</div>
+	</div>
+	<div class="element-eye left-eye column">
+		<div class="data-row">
+			<?php if ($element->hasLeft()) {
+    $this->renderPartial($element->view_view . '_OEEyeDraw', array('side' => 'left', 'element' => $element));
+} else {
+    ?>
+				<div class="data-value">Not recorded</div>
+			<?php 
+}?>
+		</div>
+	</div>
+</div>

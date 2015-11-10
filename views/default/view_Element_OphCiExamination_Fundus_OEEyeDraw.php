@@ -17,29 +17,27 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 ?>
-
-<?php
-    $this->widget('application.modules.eyedraw.OEEyeDrawWidget', array(
-        'doodleToolBarArray' => array(
-            array('RRD', 'UTear', 'RoundHole', 'Dialysis', 'GRT', 'MacularHole', 'StarFold', 'AntPVR', 'Lattice', 'Cryo', 'LaserCircle'),
-            array('DrainageRetinotomy', 'Retinoschisis', 'OuterLeafBreak', 'InnerLeafBreak'),
-        ),
-        'onReadyCommandArray' => array(
-            array('addDoodle', array('Fundus')),
-            array('deselectDoodles', array()),
-        ),
-        //'listenerArray' => array('posteriorListener'),
-        'idSuffix' => $side.'_'.$element->elementType->id,
-        'side' => ($side == 'right') ? 'R' : 'L',
-        'mode' => 'edit',
-        'model' => $element,
-        'attribute' => $side.'_eyedraw',
-        'template' => 'OEEyeDrawWidget_InlineToolbar',
-        'maxToolbarButtons' => 7,
-        'fields' => $this->renderPartial($element->form_view . '_OEEyeDraw_fields', array(
-            'form' => $form,
-            'side' => $side,
-            'element' => $element
-        ), true)
-    ));
-?>
+<div class="row posterior-pole">
+	<div class="column fixed">
+		<?php $this->widget('application.modules.eyedraw.OEEyeDrawWidget', array(
+            'idSuffix' => $side.'_'.$element->elementType->id.'_'.$element->id,
+            'side' => ($side == 'right') ? 'R' : 'L',
+            'mode' => 'view',
+            'width' => 200,
+            'height' => 200,
+            'model' => $element,
+            'attribute' => $side.'_eyedraw',
+        ))?>
+	</div>
+	<div class="column fluid">
+		<?php if ($element->{$side . '_description'}) {
+    ?>
+			<div class="data-row">
+				<div class="data-value">
+					<?= Yii::app()->format->Ntext($element->{$side.'_description'}) ?>
+				</div>
+			</div>
+		<?php 
+}?>
+	</div>
+</div>
