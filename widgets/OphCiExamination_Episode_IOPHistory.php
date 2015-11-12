@@ -24,7 +24,7 @@ class OphCiExamination_Episode_IOPHistory extends \EpisodeSummaryWidget
     {
         $chart = $this->createWidget('FlotChart', array('chart_id' => 'iop-history-chart'))
             ->configureChart(array(
-                'colors' => array('#4daf4a', '#984ea3', '#4daf4a', '#984ea3'),
+                'colors' => array('#4daf4a', '#984ea3', '#7bce77', '#ba79c3'),
             ))
             ->configureXAxis(array('mode' => 'time'))
             ->configureYAxis('mmHg', array(
@@ -35,26 +35,29 @@ class OphCiExamination_Episode_IOPHistory extends \EpisodeSummaryWidget
                 'points' => array('show' => true),
                 'lines' => array(
                     'show' => true
-                )
+                ),
+                'yaxis' => 'mmHg'
             ))
             ->configureSeries('LE', array(
                 'points' => array('show' => true),
-                'lines' => array('show' => true)
+                'lines' => array('show' => true),
+                'yaxis' => 'mmHg'
             ))
             ->configureSeries('Target RE', array(
-                'colors' => array("#fff", "#fff", "#fff"),
-                'points' => array('show' => true),
-                'dashes' => array(
-                    'show' => true,
-                    'style' => array(6)
-                )
+                'points' => array('show' => false),
+                'lines' => array('show' => true, 'lineWidth' => 0.5),
+//                'dashes' => array(
+//                    'show' => true,
+//                    'style' => array(6)
+//                )
             ))
             ->configureSeries('Target LE', array(
-                'points' => array('show' => true),
-                'dashes' => array(
-                    'show' => true,
-                    'style' => array(6)
-                )
+                'points' => array('show' => false),
+                'lines' => array('show' => true, 'lineWidth' => 0.5),
+//                'dashes' => array(
+//                    'show' => true,
+//                    'style' => array(6)
+//                )
             ));
 
         $events = $this->event_type->api->getEventsInEpisode($this->episode->patient, $this->episode);
