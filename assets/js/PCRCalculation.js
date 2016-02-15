@@ -1,20 +1,4 @@
-var timesSelectClicked = 0;
 
-/**
- * We need this function to trigger select click event in Chrome (select>option click event worked in Firefox, but had issues in Chrome)
- * @param e
- */
-function selectClicked(e){
-    if (timesSelectClicked == 0)
-    {
-        timesSelectClicked += 1;
-    }
-    else if (timesSelectClicked == 1)
-    {
-        timesSelectClicked = 0;
-        removeNotKnownAlert($(e.target));
-    }
-}
 /**
  * Maps elements in examination or op not to their respective elements in PCR risk so changes in the
  * examination are reflected in the PCR risk calculation automatically
@@ -246,18 +230,6 @@ function setPcrPupil(ev, pcrEl)
 }
 
 /**
- * Hides the Not Known alert message for the selected element
- * @param ev
- *
- */
-function removeNotKnownAlert(element){
-
-    var containerdiv = $(element).closest('[id*="ophCiExaminationPCRRisk"]');
-
-    containerdiv.find('#'+$(element).attr('id')+'_nk').hide();
-}
-
-/**
  * Capitalises the first letter of a string
  *
  * @param input
@@ -326,6 +298,9 @@ function calculateORValue( inputValues ){
     OR.doctorgrade = {'1':1, '2':0.87, '3':0.36, '4':1.65, '5':1.60, '6': 3.73, '7':1};
 
     for (var key in inputValues) {
+        if(!inputValues.hasOwnProperty(key)){
+            continue;
+        }
         if( inputValues[key] == "NK" || inputValues[key] == 0){
             return false;
         }
@@ -395,39 +370,6 @@ $(document).ready(function()
 
     $(document.body).on('change','#ophCiExaminationPCRRiskRightEye',function(){
         pcrCalculate('right');
-    });
-
-    // this is a hack for Chrome and IE
-    $(document.body).on('click keypress', '#glaucoma', function(e){selectClicked(e);});
-
-    // this one works in Firefox
-    $('#glaucoma>option').click(function(event){
-       removeNotKnownAlert($(this).parent());
-    });
-
-    $(document.body).on('click keypress', '#pxf_phako', function(e){selectClicked(e);});
-    $('#pxf_phako>option').click(function(event){
-        removeNotKnownAlert($(this).parent());
-    });
-
-    $(document.body).on('click keypress', '#diabetic', function(e){selectClicked(e);});
-    $('#diabetic>option').click(function(event){
-        removeNotKnownAlert($(this).parent());
-    });
-
-    $(document.body).on('click keypress', '#axial_length', function(e){selectClicked(e);});
-    $('#axial_length>option').click(function(event){
-        removeNotKnownAlert($(this).parent());
-    });
-
-    $(document.body).on('click keypress', '#no_fundal_view', function(e){selectClicked(e);});
-    $('#no_fundal_view>option').click(function(event){
-        removeNotKnownAlert($(this).parent());
-    });
-
-    $(document.body).on('click keypress', '#arb', function(e){selectClicked(e);});
-    $('#arb>option').click(function(event){
-        removeNotKnownAlert($(this).parent());
     });
 
 });

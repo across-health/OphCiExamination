@@ -58,12 +58,12 @@ class PcrRisk
 
         $gender = ucfirst($this->patient->getGenderString());
 
-        $is_diabetic = 'N';
+        $is_diabetic = 'NK';
         if ($this->patient->getDiabetes()) {
             $is_diabetic = 'Y';
         }
 
-        $is_glaucoma = 'N';
+        $is_glaucoma = 'NK';
         if (strpos($this->patient->getSdl(), 'glaucoma') !== false) {
             $is_glaucoma = 'Y';
         }
@@ -87,7 +87,7 @@ class PcrRisk
         $pcr['glaucoma'] = $is_glaucoma;
         $pcr['lie_flat'] = $this->getCannotLieFlat($patientId);
 
-        $no_view = 'N';
+        $no_view = 'NK';
         $no_view_data =  $this->getOpticDisc($patientId, $side);
         if (count($no_view_data) >= 1) {
             $no_view = 'Y';
@@ -194,11 +194,11 @@ class PcrRisk
 
     public function getPatientAnteriorSegment($patientId, $side)
     {
-        $as['pxf_phako'] = 'N';
+        $as['pxf_phako'] = 'NK';
         $as['pxe'] = null;
-        $as['phakodonesis']=null;
+        $as['phakodonesis'] = null;
         $as['pupil_size'] = "Medium";
-        $as['brunescent_white_cataract'] = 'N';
+        $as['brunescent_white_cataract'] = 'NK';
         $as['pxf_phako_nk'] = 0;
         $anteriorsegment = Yii::app()->db->createCommand()
             ->select('as.*')
