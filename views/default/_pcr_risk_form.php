@@ -65,9 +65,9 @@ $criteria = new CDbCriteria();
 			</div>
 			<div class="large-2 column">
 				<?php
-				echo CHtml::dropDownList('glaucoma', 'glaucoma',
+				echo CHtml::dropDownList('PcrRisk['.$side.'][glaucoma]', $pcr['glaucoma'],
 					array('NK' => 'Not Known', 'N' => 'No Glaucoma', 'Y' => 'Glaucoma present'),
-					array('options' => array($pcr['glaucoma'] => array('selected' => true))));
+					array('id' => 'pcrrisk_'.$side.'_glaucoma', 'class' => 'pcrrisk_glaucoma'));
 				?>
 			</div>
 			<div class="large-2 column pcr-nkr">
@@ -80,8 +80,8 @@ $criteria = new CDbCriteria();
 			</div>
 			<div class="large-2 column">
 				<?php
-				echo CHtml::dropDownList('pxf_phako', 'pxf_phako', array('NK' => 'Not Known', 'N' => 'No', 'Y' => 'Yes'),
-					array('options' => array($pcr['anteriorsegment']['pxf_phako'] => array('selected' => true))));
+				echo CHtml::dropDownList('PcrRisk['.$side.'][pxf_phako]', $pcr['anteriorsegment']['pxf_phako'], array('NK' => 'Not Known', 'N' => 'No', 'Y' => 'Yes'),
+					array('id' => 'pcrrisk_'.$side.'_pxf_phako', 'class' => 'pcrrisk_pxf_phako'));
 				?>
 			</div>
 			<div class="large-2 column pcr-nkr">
@@ -96,9 +96,10 @@ $criteria = new CDbCriteria();
 			</div>
 			<div class="large-2 column">
 				<?php
-				echo CHtml::dropDownList('diabetic', 'diabetic',
+				echo CHtml::dropDownList('PcrRisk['.$side.'][diabetic]', $pcr['diabetic'],
 					array('NK' => 'Not Known', 'N' => 'No Diabetes', 'Y' => 'Diabetes present'),
-					array('options' => array($pcr['diabetic'] => array('selected' => true))));
+					array('id' => 'pcrrisk_'.$side.'_diabetic', 'class' => 'pcrrisk_diabetic')
+				);
 				?>
 			</div>
 			<div class="large-2 column pcr-nkr">
@@ -115,9 +116,9 @@ $criteria = new CDbCriteria();
 				if(trim($pcr['anteriorsegment']['pupil_size']) == ""){
 					$pcr['anteriorsegment']['pupil_size'] = "Medium";
 				}
-				echo CHtml::dropDownList('pupil_size', 'pupil_size',
+				echo CHtml::dropDownList('PcrRisk['.$side.'][pupil_size]', $pcr['anteriorsegment']['pupil_size'],
 					array('Large' => 'Large', 'Medium' => 'Medium','Small' => 'Small'),
-					array('options' => array($pcr['anteriorsegment']['pupil_size'] => array('selected' => true))));
+					array('id' => 'pcrrisk_'.$side.'_pupil_size', 'class' => 'pcrrisk_pupil_size'));
 				?>
 			</div>
 			<div class="large-2 column pcr-nkr">
@@ -133,9 +134,9 @@ $criteria = new CDbCriteria();
 			</div>
 			<div class="large-2 column">
 				<?php
-				echo CHtml::dropDownList('no_fundal_view', 'no_fundal_view',
+				echo CHtml::dropDownList('PcrRisk['.$side.'][no_fundal_view]', $pcr['noview'],
 					array('NK' => 'Not Known', 'N' => 'No', 'Y' => 'Yes'),
-					array('options' => array($pcr['noview'] => array('selected' => true))));
+					array('id' => 'pcrrisk_'.$side.'_no_fundal_view', 'class' => 'pcrrisk_no_fundal_view'));
 				?>
 			</div>
 			<div class="large-2 column pcr-nkr">
@@ -148,9 +149,9 @@ $criteria = new CDbCriteria();
 			</div>
 			<div class="large-2 column">
 				<?php
-				echo CHtml::dropDownList('axial_length', 'axial_length',
+				echo CHtml::dropDownList('PcrRisk['.$side.'][axial_length]', $pcr['axial_length_group'],
 					array('NK' => 'Not Known', 1 => '< 26', 2 => '> or = 26'),
-					array('options' => array($pcr['axial_length_group'] => array('selected' => true))));
+					array('id' => 'pcrrisk_'.$side.'_axial_length', 'class' => 'pcrrisk_axial_length'));
 				?>
 			</div>
 			<div class="large-2 column pcr-nkr">
@@ -166,9 +167,9 @@ $criteria = new CDbCriteria();
 			</div>
 			<div class="large-2 column">
 				<?php
-				echo CHtml::dropDownList('brunescent_white_cataract', 'brunescent_white_cataract',
+				echo CHtml::dropDownList('PcrRisk['.$side.'][brunescent_white_cataract]', $pcr['anteriorsegment']['brunescent_white_cataract'],
 					array('NK' => 'Not Known', 'N' => 'No', 'Y' => 'Yes'),
-					array('options' => array($pcr['anteriorsegment']['brunescent_white_cataract'] => array('selected' => true))));
+					array('id' => 'pcrrisk_'.$side.'_brunescent_white_cataract', 'class' => 'pcrrisk_brunescent_white_cataract'));
 				?>
 			</div>
 			<div class="large-2 column pcr-nkr">
@@ -181,7 +182,10 @@ $criteria = new CDbCriteria();
 			</div>
 			<div class="large-2 column">
 				<?php
-				echo CHtml::dropDownList('arb', 'arb', array('NK' => 'Not Known', 'N' => 'No', 'Y' => 'Yes'));
+				echo CHtml::dropDownList('PcrRisk['.$side.'][arb]', 'NK',
+					array('NK' => 'Not Known', 'N' => 'No', 'Y' => 'Yes'),
+					array('id' => 'pcrrisk_'.$side.'_arb', 'class' => 'pcrrisk_arb')
+				);
 				?>
 			</div>
 			<div class="large-2 column pcr-nkr">
@@ -196,7 +200,7 @@ $criteria = new CDbCriteria();
 			</div>
 			<div class="large-2 column">
 				<?php echo
-				CHtml::dropDownList('doctor_grade_id', 'doctor_grade_id',
+				CHtml::dropDownList('PcrRisk['.$side.'][doctor_grade_id]', $pcr['doctor_grade_id'],
 					CHtml::listData(
 						DoctorGrade::model()->findAll($criteria->condition = "grade != 'House officer'", array('order' => 'display_order')),
 						'id',
@@ -204,7 +208,7 @@ $criteria = new CDbCriteria();
 					),
 					array(
 						'empty' => '- Select Doctor Grade -',
-						'options' => array($pcr['doctor_grade_id'] => array('selected' => true)),
+						'id' => 'pcrrisk_'.$side.'_doctor_grade_id',
 						'class' => 'pcr_doctor_grade'
 					)
 				); ?>
@@ -219,8 +223,8 @@ $criteria = new CDbCriteria();
 			</div>
 			<div class="large-2 column">
 				<?php
-				echo CHtml::dropDownList('abletolieflat', 'abletolieflat', array('N' => 'No', 'Y' => 'Yes'),
-					array('options' => array($pcr['lie_flat'] => array('selected' => true))));
+				echo CHtml::dropDownList('PcrRisk['.$side.'][abletolieflat]', $pcr['lie_flat'], array('N' => 'No', 'Y' => 'Yes'),
+					array('id' => 'pcrrisk_'.$side.'_abletolieflat'));
 				?>
 			</div>
 			<div class="large-2 column pcr-nkr">
@@ -248,7 +252,7 @@ $criteria = new CDbCriteria();
 				</label>
 			</div>
 		</div>
-		<div class="large-12 column pcr-risk-data-link">
+		<div class="large-8 column pcr-risk-data-link">
 			<label>
 				Calculation data derived from
 				<a href="http://www.researchgate.net/publication/5525424_The_Cataract_National_Dataset_electronic_multicentre_audit_of_55_567_operations_Risk_stratification_for_posterior_capsule_rupture_and_vitreous_loss" target="_blank">

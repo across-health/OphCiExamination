@@ -12,29 +12,29 @@ function mapExaminationToPcr()
                 "init": true
             },
             "#OEModule_OphCiExamination_models_Element_OphCiExamination_AnteriorSegment_right_nuclear_id,#OEModule_OphCiExamination_models_Element_OphCiExamination_AnteriorSegment_left_nuclear_id": {
-                "pcr": 'select[name="brunescent_white_cataract"]',
+                "pcr": '.pcr_brunescent_white_cataract',
                 "func": setPcrBrunescent
             },
             ":input[id*='_pxe_control']": {
-                "pcr":  'select[name="pxf_phako"]',
+                "pcr":  '.pcr_pxf_phako',
                 "func": setPcrPxf
             },
             ":input[id*='_pupilSize_control']": {
-                "pcr":  'select[name="pupil_size"]',
+                "pcr":  '.pcr_pupil_size',
                 "func": setPcrPupil
             },
             ":input[name^='diabetic_diagnoses']": {
-                "pcr": 'select[name="diabetic"]',
+                "pcr": '.pcr_diabetic',
                 "func": setDiabeticDisorder,
                 "init": true
             },
             ":input[name^='glaucoma_diagnoses']": {
-                "pcr": 'select[name="glaucoma"]',
+                "pcr": '.pcr_glaucoma',
                 "func": setGlaucomaDisorder,
                 "init": true
             },
             "#OEModule_OphCiExamination_models_Element_OphCiExamination_OpticDisc_right_cd_ratio_id,#OEModule_OphCiExamination_models_Element_OphCiExamination_OpticDisc_left_cd_ratio_id": {
-                "pcr": 'select[name="no_fundal_view"]',
+                "pcr": '.pcr_no_fundal_view',
                 "func": setFundalView,
                 "init": true
             }
@@ -249,18 +249,18 @@ function collectValues( side ){
     var pcrdata = {},
         $eyeSide = $('#ophCiExaminationPCRRisk' + side + 'Eye');
 
-    pcrdata.age = $eyeSide.find(":input[name='age']").val();
-    pcrdata.gender = $eyeSide.find(":input[name='gender']").val();
-    pcrdata.glaucoma = $eyeSide.find("select[name='glaucoma']").val();
-    pcrdata.diabetic = $eyeSide.find("select[name='diabetic']").val();
-    pcrdata.fundalview = $eyeSide.find("select[name='no_fundal_view']").val();
-    pcrdata.brunescentwhitecataract = $eyeSide.find("select[name='brunescent_white_cataract']").val();
-    pcrdata.pxf = $eyeSide.find("select[name='pxf_phako']").val();
-    pcrdata.pupilsize = $eyeSide.find("select[name='pupil_size']").val();
-    pcrdata.axiallength = $eyeSide.find("select[name='axial_length']").val();
-    pcrdata.alpareceptorblocker = $eyeSide.find("select[name='arb']").val();
-    pcrdata.abletolieflat = $eyeSide.find("select[name='abletolieflat']").val();
-    pcrdata.doctorgrade = $eyeSide.find("select[name='doctor_grade_id']").val();
+    pcrdata.age = $eyeSide.find(":input[id$='age']").val();
+    pcrdata.gender = $eyeSide.find(":input[id$='gender']").val();
+    pcrdata.glaucoma = $eyeSide.find("select[id$='glaucoma']").val();
+    pcrdata.diabetic = $eyeSide.find("select[id$='diabetic']").val();
+    pcrdata.fundalview = $eyeSide.find("select[id$='no_fundal_view']").val();
+    pcrdata.brunescentwhitecataract = $eyeSide.find("select[id$='brunescent_white_cataract']").val();
+    pcrdata.pxf = $eyeSide.find("select[id$='pxf_phako']").val();
+    pcrdata.pupilsize = $eyeSide.find("select[id$='pupil_size']").val();
+    pcrdata.axiallength = $eyeSide.find("select[id$='axial_length']").val();
+    pcrdata.alpareceptorblocker = $eyeSide.find("select[id$='arb']").val();
+    pcrdata.abletolieflat = $eyeSide.find("select[id$='abletolieflat']").val();
+    pcrdata.doctorgrade = $eyeSide.find("select[id$='doctor_grade_id']").val();
 
     return pcrdata;
 }
