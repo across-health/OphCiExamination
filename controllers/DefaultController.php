@@ -978,7 +978,7 @@ class DefaultController extends \BaseEventTypeController
             echo '0';
         }
         else {
-            \Yii::app()->getRequest()->sendFile($uuid, file_get_contents($edited_fname));
+            \Yii::app()->getRequest()->sendFile($uuid, base64_encode(file_get_contents($edited_fname)));
         }
     }
 

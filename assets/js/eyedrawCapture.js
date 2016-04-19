@@ -127,6 +127,12 @@ ED.CanvasEditor = (function($) {
         }, self.options.poll_interval * 1000)
     };
 
+    /**
+     * polls for the edited canvas image and replaces eyedraw canvas with the result
+     *
+     * @TODO: interface with eyedraw to manage this correctly
+     * @param uuid
+     */
     CanvasEditor.prototype.loadEditedCanvas = function(uuid)
     {
         var self = this;
@@ -144,9 +150,13 @@ ED.CanvasEditor = (function($) {
                 }
                 else {
                     clearInterval(self.interval);
-                    debugger;
-                    self.target[0].putImageData(data, 0, 0);
                     self.cleanUp();
+                    var img = new Image(300,300);
+                    img.src = 'data:image/png;base64,' + data;
+                    var id = self.target.attr('id');
+                    self.target.replaceWith('<canvas width="300" height="300" id="' + id + '"/>');
+                    ctx = $('#' +id)[0].getContext('2d');
+                    ctx.drawImage(img,0,0);
                 }
             },
             error: function(xhr, ajaxOptions, thrownError) {
