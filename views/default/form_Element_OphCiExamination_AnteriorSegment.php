@@ -62,3 +62,13 @@
 		</div>
 	</div>
 </div>
+<script type="text/javascript">
+	$(document).ready(function() {
+
+		$('.eyedraw-capture').canvaseditor({
+			baseUrl: baseUrl,
+			csrfToken: YII_CSRF_TOKEN
+		});
+
+	});
+</script>

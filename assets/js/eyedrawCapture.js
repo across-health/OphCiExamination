@@ -186,12 +186,3 @@ ED.CanvasEditor = (function($) {
 
     return CanvasEditor;
 }(jQuery));
-
-$(document).ready(function() {
-
-    $('.eyedraw-capture').canvaseditor({
-        baseUrl: baseUrl,
-        csrfToken: YII_CSRF_TOKEN
-    });
-
-});
