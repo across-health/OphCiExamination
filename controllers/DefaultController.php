@@ -29,12 +29,26 @@ use \OEModule\OphCiExamination\components;
 
 class DefaultController extends \BaseEventTypeController
 {
+    //dubious action type that allows non logged in access for mobile app integration
+    //NOT FOR PRODUCTION!!!
+    //FIXME: get rid of this
+    const ACTION_TYPE_FREE = 'Free';
+
+    // NOT FOR PRODUCTION!!
+    public function checkFreeAccess()
+    {
+        return true;
+    }
+
     protected static $action_types = array(
         'step' => self::ACTION_TYPE_EDIT,
         'getDisorder' => self::ACTION_TYPE_FORM,
         'loadInjectionQuestions' => self::ACTION_TYPE_FORM,
         'getScaleForInstrument' => self::ACTION_TYPE_FORM,
         'getPreviousIOPAverage' => self::ACTION_TYPE_FORM,
+        'storeCanvasForEditing' => self::ACTION_TYPE_FORM,
+        'downloadCanvasForEditing' => self::ACTION_TYPE_FORM,
+        'uploadEditedCanvas' => self::ACTION_TYPE_FREE
     );
 
     // if set to true, we are advancing the current event step
@@ -58,6 +72,8 @@ class DefaultController extends \BaseEventTypeController
     protected function beforeAction($action)
     {
         Yii::app()->assetManager->registerScriptFile('js/spliteventtype.js', null, null, \AssetManager::OUTPUT_SCREEN);
+        Yii::app()->clientScript->registerScriptFile("{$this->assetPath}/js/jquery.qrcode-0.12.0.js", \CClientScript::POS_HEAD);
+        Yii::app()->clientScript->registerScriptFile("{$this->assetPath}/js/eyedrawCapture.js", \CClientScript::POS_HEAD);
         $this->jsVars['OE_MODEL_PREFIX'] = 'OEModule_OphCiExamination_models_';
         return parent::beforeAction($action);
     }
@@ -887,6 +903,86 @@ class DefaultController extends \BaseEventTypeController
                 $this->renderPartial('_qualitative_scale', array('value' => $value, 'scale' => $scale, 'side' => @$_GET['side'], 'index' => @$_GET['index']));
             }
         }
+    }
+
+    private function getFilePathForUuid($uuid)
+    {
+        $path = Yii::app()->basePath.DIRECTORY_SEPARATOR."runtime" . DIRECTORY_SEPARATOR . "cache" . DIRECTORY_SEPARATOR . "canvasEdits";
+        return $path . DIRECTORY_SEPARATOR . $uuid . ".png";
+    }
+
+    /**
+     * Save submitted canvas png data for retrieval by external app
+     *
+     * @throws Exception
+     * @throws \Exception
+     */
+    public function actionStoreCanvasForEditing()
+    {
+        if (!empty($_POST['image'])) {
+            $blob = $_POST['image'];
+            $uuid = \Helper::generateUuid();
+            $check_count = 0;
+            while (file_exists($this->getFilePathForUuid($uuid)) && $check_count++ < 3) {
+                $uuid = \Helper::generateUuid();
+            }
+            if (file_exists($this->getFilePathForUuid($uuid))) {
+                throw new \Exception("Cannot get unique filename store for canvas image");
+            }
+
+            if (!@file_put_contents($this->getFilePathForUuid($uuid), base64_decode(preg_replace('/^data\:image\/png;base64,/','',$blob)))) {
+                throw new \Exception("Failed to write to {$this->getFilePathForUuid($uuid)}: check permissions.");
+            }
+
+            $response = array(
+                'uuid' => $uuid,
+            );
+
+            echo json_encode($response);
+        }
+        else {
+            throw new \Exception("image data required");
+        }
+
+    }
+
+    /**
+     * Simple canvas retrieval method
+     *
+     * @param $uuid
+     * @throws \Exception
+     */
+    public function actionDownloadCanvasForEditing($uuid)
+    {
+        $path = $this->getFilePathForUuid($uuid);
+        if (!file_exists($path)) {
+            throw new \Exception("Cannot find canvas file for uuid {$uuid}");
+        }
+
+        header('Content-Type: image/png');
+        header('Content-Length: '.filesize($path));
+        readfile($path);
+    }
+
+    /**
+     * A very simple upload process for an edited canvas image
+     *
+     * @param $uuid
+     * @throws \Exception
+     */
+    public function actionUploadEditedCanvas($uuid)
+    {
+        $path = $this->getFilePathForUuid($uuid);
+        if (!file_exists($path)) {
+            throw new \Exception("Cannot upload canvas file for non-existent uuid {$uuid}");
+        }
+
+        $edited_path = $this->getFilePathForUuid($uuid, true);
+        if (file_exists($edited_path)) {
+            throw new \Exception("Edited canvas already uploaded for uuid {$uuid}");
+        }
+
+        file_put_contents($edited_path, \Yii::app()->request->rawBody);
     }
 
     protected function setElementDefaultOptions_Element_OphCiExamination_OverallManagementPlan(models\Element_OphCiExamination_OverallManagementPlan $element, $action)
