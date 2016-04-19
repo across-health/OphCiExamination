@@ -48,7 +48,8 @@ class DefaultController extends \BaseEventTypeController
         'getPreviousIOPAverage' => self::ACTION_TYPE_FORM,
         'storeCanvasForEditing' => self::ACTION_TYPE_FORM,
         'downloadCanvasForEditing' => self::ACTION_TYPE_FORM,
-        'uploadEditedCanvas' => self::ACTION_TYPE_FREE
+        'uploadEditedCanvas' => self::ACTION_TYPE_FREE,
+        'downloadEditedCanvas' => self::ACTION_TYPE_FORM
     );
 
     // if set to true, we are advancing the current event step
@@ -905,10 +906,10 @@ class DefaultController extends \BaseEventTypeController
         }
     }
 
-    private function getFilePathForUuid($uuid)
+    private function getFilePathForUuid($uuid, $edited = false)
     {
-        $path = Yii::app()->basePath.DIRECTORY_SEPARATOR."runtime" . DIRECTORY_SEPARATOR . "cache" . DIRECTORY_SEPARATOR . "canvasEdits";
-        return $path . DIRECTORY_SEPARATOR . $uuid . ".png";
+        $path = \Yii::app()->basePath.DIRECTORY_SEPARATOR."runtime" . DIRECTORY_SEPARATOR . "cache" . DIRECTORY_SEPARATOR . "canvasEdits";
+        return $path . DIRECTORY_SEPARATOR . $uuid . (($edited) ? '_edit' : '') . ".png";
     }
 
     /**
@@ -927,7 +928,7 @@ class DefaultController extends \BaseEventTypeController
                 $uuid = \Helper::generateUuid();
             }
             if (file_exists($this->getFilePathForUuid($uuid))) {
-                throw new \Exception("Cannot get unique filename store for canvas image");
+                throw new \Exception("Cannot get unique filename store for canvas image {$uuid}");
             }
 
             if (!@file_put_contents($this->getFilePathForUuid($uuid), base64_decode(preg_replace('/^data\:image\/png;base64,/','',$blob)))) {
@@ -964,25 +965,21 @@ class DefaultController extends \BaseEventTypeController
         readfile($path);
     }
 
-    /**
-     * A very simple upload process for an edited canvas image
-     *
-     * @param $uuid
-     * @throws \Exception
-     */
-    public function actionUploadEditedCanvas($uuid)
+    public function actionDownloadEditedCanvas($uuid)
     {
-        $path = $this->getFilePathForUuid($uuid);
-        if (!file_exists($path)) {
-            throw new \Exception("Cannot upload canvas file for non-existent uuid {$uuid}");
+        if (!file_exists($this->getFilePathForUuid($uuid))) {
+            throw new \Exception("Unrecognised UUID");
         }
 
-        $edited_path = $this->getFilePathForUuid($uuid, true);
-        if (file_exists($edited_path)) {
-            throw new \Exception("Edited canvas already uploaded for uuid {$uuid}");
+        $edited_fname = $this->getFilePathForUuid($uuid, true);
+        if (!file_exists($edited_fname) || file_exists($edited_fname . '.lock')) {
+            header('HTTP/1.1 ' . 204);
+            header('Content-type: text/html');
+            echo '0';
         }
-
-        file_put_contents($edited_path, \Yii::app()->request->rawBody);
+        else {
+            \Yii::app()->getRequest()->sendFile($uuid, file_get_contents($edited_fname));
+        }
     }
 
     protected function setElementDefaultOptions_Element_OphCiExamination_OverallManagementPlan(models\Element_OphCiExamination_OverallManagementPlan $element, $action)
