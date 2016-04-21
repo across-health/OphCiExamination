@@ -41,6 +41,25 @@ class ApiController extends \CController
         throw new \Exception("Unable to parse file content");
     }
 
+    /**
+     * Simple canvas retrieval method
+     *
+     * Not exactly API-ish here, but will do the job whilst we don't have external authorisation on defaultController.
+     *
+     * @param $uuid
+     * @throws \Exception
+     */
+    public function actionDownloadCanvasForEditing($uuid)
+    {
+        $path = $this->getFilePathForUuid($uuid);
+        if (!file_exists($path)) {
+            throw new \Exception("Cannot find canvas file for uuid {$uuid}");
+        }
+
+        header('Content-Type: image/png');
+        header('Content-Length: '.filesize($path));
+        readfile($path);
+    }
 
     /**
      * Note, doesn't currently perform auth checks for convenience for testing

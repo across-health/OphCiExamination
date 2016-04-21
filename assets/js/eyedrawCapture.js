@@ -5,7 +5,7 @@ ED.CanvasEditor = (function($) {
     var defaultOptions = {
         debug: true,
         storeUrlStub: '/OphCiExamination/default/storeCanvasForEditing',
-        downloadUrlRootStub: '/OphCiExamination/default/downloadCanvasForEditing/',
+        downloadUrlRootStub: '/OphCiExamination/api/downloadCanvasForEditing/',
         uploadUrlRootStub: '/OphCiExamination/api/uploadEditedCanvas/',
         loadEditedUrlRootStub: '/OphCiExamination/default/downloadEditedCanvas/',
         baseUrl: 'http://openeyes',

@@ -47,7 +47,6 @@ class DefaultController extends \BaseEventTypeController
         'getScaleForInstrument' => self::ACTION_TYPE_FORM,
         'getPreviousIOPAverage' => self::ACTION_TYPE_FORM,
         'storeCanvasForEditing' => self::ACTION_TYPE_FORM,
-        'downloadCanvasForEditing' => self::ACTION_TYPE_FORM,
         'uploadEditedCanvas' => self::ACTION_TYPE_FREE,
         'downloadEditedCanvas' => self::ACTION_TYPE_FORM
     );
@@ -945,24 +944,6 @@ class DefaultController extends \BaseEventTypeController
             throw new \Exception("image data required");
         }
 
-    }
-
-    /**
-     * Simple canvas retrieval method
-     *
-     * @param $uuid
-     * @throws \Exception
-     */
-    public function actionDownloadCanvasForEditing($uuid)
-    {
-        $path = $this->getFilePathForUuid($uuid);
-        if (!file_exists($path)) {
-            throw new \Exception("Cannot find canvas file for uuid {$uuid}");
-        }
-
-        header('Content-Type: image/png');
-        header('Content-Length: '.filesize($path));
-        readfile($path);
     }
 
     public function actionDownloadEditedCanvas($uuid)
