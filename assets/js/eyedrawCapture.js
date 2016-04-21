@@ -153,19 +153,11 @@ ED.CanvasEditor = (function($) {
                     self.cleanUp();
                     var img = new Image(300,300);
                     img.src = 'data:image/png;base64,' + data;
-                    /*
-                    var id = self.target.attr('id');
-                    self.target.replaceWith('<canvas width="300" height="300" id="' + id + '"/>');
-                    ctx = $('#' +id)[0].getContext('2d');
-                    */
+
                     var drawing = ED.getInstance(self.target.data('drawing-name'));
 
-                    ctx = drawing.canvas.getContext('2d');
-                    ctx.scale(1,1);
-                    ctx.setTransform(1,0,0,1,0,0);
-                    ctx.drawImage(img,0,0, 300, 300);
-                    ctx.scale(drawing.scale, drawing.scale);
-                    ctx.translate(drawing.canvas.width / 2, drawing.canvas.height / 2);
+                    drawing.addDoodle('EyePadDrawing', {'image': img.src });
+
                 }
             },
             error: function(xhr, ajaxOptions, thrownError) {
