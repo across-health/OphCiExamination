@@ -66,7 +66,7 @@
 	$(document).ready(function() {
 
 		$('.eyedraw-capture').canvaseditor({
-			baseUrl: baseUrl,
+			baseUrl: '<?= \Yii::app()->getBaseUrl(true) ?>',
 			csrfToken: YII_CSRF_TOKEN
 		});
 
