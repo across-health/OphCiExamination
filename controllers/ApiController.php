@@ -22,6 +22,73 @@ namespace OEModule\OphCiExamination\controllers;
 class ApiController extends \CController
 {
 
+    protected function getContentType()
+    {
+        return "application/xml";
+    }
+
+    protected function getFileContentFromXml($xml)
+    {
+        $doc = new \DOMDocument();
+        $doc->loadXML($xml);
+
+        // quick hack to get the content for now, we should validate the XML correctly.
+        $nodes = $doc->getElementsByTagName('file');
+
+        if ($nodes->length == 1) {
+            return base64_decode($nodes->item(0)->nodeValue);
+        }
+        throw new \Exception("Unable to parse file content");
+    }
+
+
+    /**
+     * Note, doesn't currently perform auth checks for convenience for testing
+     *
+     * @TODO: implement auth check on this method - TBD what mechanism to use for this
+     * @param $uuid
+     * @throws \CHttpException
+     * @throws \Exception
+     */
+    public function actionUploadEditedCanvas($uuid)
+    {
+        $path = $this->getFilePathForUuid($uuid);
+        try {
+            if (!file_exists($path)) {
+                throw new \Exception("Cannot upload canvas file for non-existent uuid {$uuid}");
+            }
+
+            $edited_path = $this->getFilePathForUuid($uuid, true);
+            if (file_exists($edited_path)) {
+                throw new \Exception("Edited canvas already uploaded for uuid {$uuid}");
+            }
+
+            if ($content = $this->getFileContentFromXml(\Yii::app()->request->rawBody)) {
+                file_put_contents($edited_path . '.lock', '1');
+                file_put_contents($edited_path, $content);
+                unlink($edited_path . '.lock');
+
+                $this->sendResponse(200, "<canvasUpload><status>success</status></canvasUpload>");
+            }
+            throw new \Exception("Unknown error with processing");
+        } catch (\Exception $e)
+        {
+            $this->sendResponse(400, "<canvasUpload><status>failure</status><message>" . $e->getMessage() . "</message></canvasUpload>");
+        }
+    }
+
+    protected function sendResponse($status = 200, $body = '')
+    {
+        header('HTTP/1.1 ' . $status);
+        header('Content-type: ' . $this->getContentType());
+        if ($status == 401) header('WWW-Authenticate: Basic realm="OpenEyes"');
+
+        if ($status == 405) header('Allow: POST');
+        echo $body;
+        \Yii::app()->end();
+    }
+
+
     /**
      * Dubiously duplicated from DefaultController
      *
@@ -37,26 +104,4 @@ class ApiController extends \CController
         return $path . DIRECTORY_SEPARATOR . $uuid . (($edited) ? '_edit' : '') . ".png";
     }
 
-    /**
-     * A very simple upload process for an edited canvas image
-     *
-     * @param $uuid
-     * @throws \Exception
-     */
-    public function actionUploadEditedCanvas($uuid)
-    {
-        $path = $this->getFilePathForUuid($uuid);
-        if (!file_exists($path)) {
-            throw new \Exception("Cannot upload canvas file for non-existent uuid {$uuid}");
-        }
-
-        $edited_path = $this->getFilePathForUuid($uuid, true);
-        if (file_exists($edited_path)) {
-            throw new \Exception("Edited canvas already uploaded for uuid {$uuid}");
-        }
-        file_put_contents($edited_path . '.lock', '1');
-        file_put_contents($edited_path, base64_decode($_POST['file']));
-        unlink($edited_path . '.lock');
-        echo 1;
-    }
 }
