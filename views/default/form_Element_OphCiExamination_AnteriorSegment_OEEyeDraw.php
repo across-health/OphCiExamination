@@ -23,7 +23,7 @@ $this->widget('application.modules.eyedraw.OEEyeDrawWidget', array(
         array('NuclearCataract', 'CorticalCataract', 'PostSubcapCataract', 'PCIOL', 'ACIOL', 'Bleb', 'PI',
             'Fuchs', 'RK', 'LasikFlap', 'CornealScar', 'SectorIridectomy', 'PosteriorSynechia', 'Rubeosis',
             'TransilluminationDefect', 'KrukenbergSpindle', 'KeraticPrecipitates', 'PosteriorCapsule', 'Hypopyon',
-            'CornealOedema', 'Episcleritis'),
+            'CornealOedema', 'Episcleritis', 'Hyphaema'),
         array('TrabySuture', 'Supramid', 'TubeLigation', 'CornealSuture', 'TrabyFlap', 'SidePort', 'Patch',
             'ConjunctivalSuture', 'ACMaintainer', 'Tube', 'TubeExtender'),
     ),
